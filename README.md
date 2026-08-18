@@ -91,8 +91,31 @@ Nada. Vercel (Hobby) y Supabase (Free) son gratis. El plan gratis de Supabase da
 Entra a `tudominio.vercel.app/admin`, inicia sesión y usa el formulario. Puedes
 subir varias fotos por producto, poner precio, tallas, colores y categoría.
 
-**Consejo con las fotos:** súbelas livianas (200–400 KB) para que la web cargue
-rápido. Puedes reducirlas en https://squoosh.app (gratis).
+**¿Tengo que achicar las fotos antes de subirlas?**
+No. La web las optimiza sola: las achica a 1400 px y les baja un poco la calidad
+justo antes de subirlas. Una foto de celular de 4 MB queda en ~200 KB sin que se
+note. Puedes elegirlas directo de la galería del teléfono.
+
+**¿Cuántos productos y fotos puedo tener?**
+Por defecto **250 productos** y **5 fotos por producto**. Con la optimización
+activada eso ocupa ~50 MB, muy lejos del límite de 1 GB de Supabase. Puedes
+cambiar esos números en `lib/config.js` (`maxProductos` y `maxFotosPorProducto`),
+junto con la calidad de las fotos (`imagenes.calidad`, de 0 a 1).
+
+**Mi tienda dejó de funcionar de un día para otro.**
+Lo más probable es que Supabase **pausara el proyecto por inactividad** (lo hace
+en el plan gratis tras ~1 semana sin uso). No perdiste nada: entra a
+https://supabase.com/dashboard y pulsa **Restore**. En un par de minutos vuelve
+con todos los productos y fotos intactos. Ojo: si lo dejas pausado **90 días**,
+ahí sí lo borran definitivamente.
+
+**Se me llenó el espacio de fotos, ¿cómo lo libero?**
+Doble clic en **`limpiar-fotos.bat`**. Primero te muestra un informe sin borrar
+nada: cuántas fotos hay, cuánto ocupan y cuántas están **sin usar** (subidas y
+luego descartadas). Después puedes:
+- `limpiar-fotos.bat huerfanas` → borra solo las que ningún producto usa. **Seguro.**
+- `limpiar-fotos.bat todas` → borra **todas** las fotos. Los productos se quedan
+  sin imagen y hay que volver a subirlas. Te pide escribir `BORRAR TODO` para confirmar.
 
 **¿Puedo cambiar los colores o el logo?**
 El logo está en `public/logo.svg`. Los colores de la marca están arriba del

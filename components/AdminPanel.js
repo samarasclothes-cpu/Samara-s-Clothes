@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { config } from '@/lib/config'
 import { formatearPrecio } from '@/lib/utils'
+import { optimizarImagen, formatearPeso } from '@/lib/imagen'
 import { IconoPrenda, IconoImagen, IconoLapiz, IconoMas } from '@/components/Iconos'
 
 const BUCKET = 'productos'
+const MAX_PRODUCTOS = config.maxProductos || Infinity
+const MAX_FOTOS = config.maxFotosPorProducto || Infinity
 
 // Estado vacío de un producto nuevo.
 const productoVacio = {
@@ -37,10 +40,13 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
   const [productos, setProductos] = useState(productosIniciales)
   const [form, setForm] = useState(productoVacio)
   const [subiendo, setSubiendo] = useState(false)
+  const [progreso, setProgreso] = useState('')
   const [guardando, setGuardando] = useState(false)
   const [aviso, setAviso] = useState(null) // {tipo:'ok'|'error', texto}
 
   const editando = form.id !== null
+  const fotosLibres = MAX_FOTOS - form.images.length
+  const limiteAlcanzado = !editando && productos.length >= MAX_PRODUCTOS
 
   function mostrarAviso(tipo, texto) {
     setAviso({ tipo, texto })
@@ -73,29 +79,66 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // ── Subir fotos a Supabase Storage ──────────────────────────
+  // ── Subir fotos a Supabase Storage (optimizándolas antes) ───
   async function subirFotos(e) {
-    const archivos = Array.from(e.target.files || [])
+    let archivos = Array.from(e.target.files || [])
+    if (inputFotos.current) inputFotos.current.value = ''
     if (archivos.length === 0) return
+
+    // Respetamos el máximo de fotos por producto.
+    if (archivos.length > fotosLibres) {
+      if (fotosLibres <= 0) {
+        mostrarAviso(
+          'error',
+          `Este producto ya tiene el máximo de ${MAX_FOTOS} fotos. Quita alguna para agregar otra.`
+        )
+        return
+      }
+      mostrarAviso(
+        'error',
+        `Solo caben ${fotosLibres} foto(s) más en este producto (máximo ${MAX_FOTOS}). Se subirán las primeras.`
+      )
+      archivos = archivos.slice(0, fotosLibres)
+    }
+
     setSubiendo(true)
+    let pesoAntes = 0
+    let pesoDespues = 0
     try {
       const nuevas = []
-      for (const archivo of archivos) {
+      for (let i = 0; i < archivos.length; i++) {
+        setProgreso(`Optimizando foto ${i + 1} de ${archivos.length}…`)
+        const { archivo, pesoOriginal, pesoFinal } = await optimizarImagen(archivos[i])
+        pesoAntes += pesoOriginal
+        pesoDespues += pesoFinal
+
+        setProgreso(`Subiendo foto ${i + 1} de ${archivos.length}…`)
         const ext = archivo.name.split('.').pop()
         const nombre = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
         const { error } = await supabase.storage
           .from(BUCKET)
-          .upload(nombre, archivo, { cacheControl: '3600', upsert: false })
+          .upload(nombre, archivo, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: archivo.type,
+          })
         if (error) throw error
         const { data } = supabase.storage.from(BUCKET).getPublicUrl(nombre)
         nuevas.push(data.publicUrl)
       }
       setForm((f) => ({ ...f, images: [...f.images, ...nuevas] }))
+      const ahorro = pesoAntes - pesoDespues
+      mostrarAviso(
+        'ok',
+        ahorro > 0
+          ? `${nuevas.length} foto(s) lista(s). Optimizadas de ${formatearPeso(pesoAntes)} a ${formatearPeso(pesoDespues)}.`
+          : `${nuevas.length} foto(s) lista(s).`
+      )
     } catch (err) {
       mostrarAviso('error', 'No se pudieron subir las fotos: ' + err.message)
     } finally {
       setSubiendo(false)
-      if (inputFotos.current) inputFotos.current.value = ''
+      setProgreso('')
     }
   }
 
@@ -110,6 +153,13 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
     e.preventDefault()
     if (!form.name.trim()) {
       mostrarAviso('error', 'El producto necesita un nombre.')
+      return
+    }
+    if (limiteAlcanzado) {
+      mostrarAviso(
+        'error',
+        `Llegaste al máximo de ${MAX_PRODUCTOS} productos. Elimina alguno de la lista de abajo para poder agregar otro.`
+      )
       return
     }
     setGuardando(true)
@@ -200,6 +250,27 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
       <div className="admin-main">
         {aviso && <div className={`aviso aviso-${aviso.tipo}`}>{aviso.texto}</div>}
 
+        {/* Medidor de cuántos productos llevas */}
+        <div className="medidor">
+          <div className="medidor-texto">
+            <span>Productos publicados</span>
+            <strong>
+              {productos.length} de {MAX_PRODUCTOS}
+            </strong>
+          </div>
+          <div className="medidor-barra">
+            <div
+              className={`medidor-relleno ${limiteAlcanzado ? 'lleno' : ''}`}
+              style={{ width: `${Math.min(100, (productos.length / MAX_PRODUCTOS) * 100)}%` }}
+            />
+          </div>
+          {limiteAlcanzado && (
+            <div className="medidor-nota">
+              Llegaste al máximo. Elimina algún producto para poder agregar otro.
+            </div>
+          )}
+        </div>
+
         {/* Formulario */}
         <div className="panel">
           <h3 className="panel-titulo">
@@ -275,7 +346,9 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
             </div>
 
             <div className="campo">
-              <label>Fotos del producto</label>
+              <label>
+                Fotos del producto ({form.images.length} de {MAX_FOTOS})
+              </label>
               <div className="subir-fotos">
                 {form.images.map((url) => (
                   <div className="foto-preview" key={url}>
@@ -291,22 +364,25 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
                     </button>
                   </div>
                 ))}
-                <label className="dropzone">
-                  <IconoImagen size={26} />
-                  {subiendo ? 'Subiendo…' : 'Agregar fotos'}
-                  <input
-                    ref={inputFotos}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={subirFotos}
-                    style={{ display: 'none' }}
-                    disabled={subiendo}
-                  />
-                </label>
+                {fotosLibres > 0 && (
+                  <label className={`dropzone ${subiendo ? 'ocupada' : ''}`}>
+                    <IconoImagen size={26} />
+                    {subiendo ? progreso || 'Subiendo…' : 'Agregar fotos'}
+                    <input
+                      ref={inputFotos}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={subirFotos}
+                      style={{ display: 'none' }}
+                      disabled={subiendo}
+                    />
+                  </label>
+                )}
               </div>
               <div className="campo-ayuda">
-                La primera foto será la portada. Puedes subir varias.
+                La primera foto será la portada. Se optimizan solas al subirlas, así
+                que puedes elegirlas directo del celular sin achicarlas antes.
               </div>
             </div>
 
@@ -323,7 +399,11 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
             </div>
 
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <button type="submit" className="btn btn-rosa" disabled={guardando || subiendo}>
+              <button
+                type="submit"
+                className="btn btn-rosa"
+                disabled={guardando || subiendo || limiteAlcanzado}
+              >
                 {guardando ? (
                   <>
                     <span className="spinner" />
@@ -346,7 +426,9 @@ export default function AdminPanel({ productosIniciales, emailAdmin }) {
 
         {/* Lista */}
         <div className="panel">
-          <h3>Productos ({productos.length})</h3>
+          <h3>
+            Productos ({productos.length} de {MAX_PRODUCTOS})
+          </h3>
           {productos.length === 0 ? (
             <p style={{ color: 'var(--texto-suave)' }}>
               Todavía no has agregado productos. ¡Usa el formulario de arriba!

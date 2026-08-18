@@ -9,7 +9,9 @@ export default function InfoSeccion() {
         <h2>Información importante</h2>
         <p>
           Estimada clientela, su comodidad es nuestra prioridad, por eso aclaramos este
-          punto: nuestro método de trabajo es <strong>bajo pedido</strong>. Al solicitar
+          punto: <strong>somos fabricantes</strong> y nuestro método de trabajo es{' '}
+          <strong>bajo pedido</strong>. Cada prenda se confecciona después de
+          encargarla, por lo que necesitamos unos días para tenerla lista. Al solicitar
           nuestro servicio se debe indicar <strong>talla y color</strong> de la prenda.
         </p>
         <p>
@@ -17,6 +19,10 @@ export default function InfoSeccion() {
           para apartar, y la otra parte el día de la entrega. Los precios no cambian si se
           paga en divisas.
         </p>
+        <div className="info-destacado">
+          No aceptamos pedidos de un día para otro: cada prenda se fabrica a la medida
+          de tu encargo.
+        </div>
         <div className="info-destacado">
           Los colores mostrados son solo de referencia: tenemos una amplia variedad de
           colores.
@@ -28,16 +34,14 @@ export default function InfoSeccion() {
         <h2>Entregas</h2>
         <p>
           El día de la entrega se acuerda con tiempo; si hay algún contratiempo se puede
-          agendar para otro día. Las entregas se realizan los <strong>fines de semana a
-          partir de las 5:00 PM</strong>. Delivery a partir de <strong>2$</strong>.
+          agendar para otro día. Las entregas se realizan los{' '}
+          <strong>fines de semana</strong>. Delivery a partir de <strong>2$</strong>.
         </p>
         <div className="info-cols">
           <div>
             <h3>Entregas personales en Caracas</h3>
             <ul>
-              <li>Bellas Artes</li>
               <li>Plaza Venezuela</li>
-              <li>Miranda</li>
             </ul>
           </div>
           <div>
