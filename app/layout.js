@@ -19,7 +19,7 @@ const poppins = Poppins({
 export const metadata = {
   title: `${config.nombreTienda} · ${config.eslogan}`,
   description: `Catálogo de ${config.nombreTienda}. ${config.eslogan}.`,
-  icons: { icon: '/logo.svg' },
+  icons: { icon: '/favicon.png' },
 }
 
 export default function RootLayout({ children }) {

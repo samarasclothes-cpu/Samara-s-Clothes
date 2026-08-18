@@ -1,22 +1,23 @@
 /* ══════════════════════════════════════════════════════════════
    Estilos de Samara's Clothes
-   Paleta de marca:  rosa claro #ffeaf7  ·  rosa fuerte #f866bf
+   Paleta de marca:  #4b212b ciruela · #f1dddc blush · #eaa9c0 rosa medio · #d66587 rosa
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  --rosa-claro: #ffeaf7;
-  --rosa: #f866bf;
-  --rosa-oscuro: #d13c9a;
-  --rosa-suave: #fff5fb;
-  --texto: #3a2233;
-  --texto-suave: #8a6e80;
+  --rosa-claro: #f1dddc;   /* blush claro */
+  --rosa: #d66587;         /* rosa principal */
+  --rosa-oscuro: #4b212b;  /* ciruela oscuro */
+  --rosa-suave: #faf3f2;   /* blush casi blanco */
+  --rosa-medio: #eaa9c0;   /* rosa medio */
+  --texto: #4b212b;
+  --texto-suave: #8a6a72;
   --blanco: #ffffff;
-  --borde: #f6d6ea;
-  --sombra: 0 6px 24px rgba(248, 102, 191, 0.14);
-  --sombra-fuerte: 0 18px 50px rgba(248, 102, 191, 0.28);
+  --borde: #eddad9;
+  --sombra: 0 6px 24px rgba(75, 33, 43, 0.10);
+  --sombra-fuerte: 0 18px 50px rgba(75, 33, 43, 0.22);
   --radio: 20px;
   --verde-wa: #25d366;
-  --grad-rosa: linear-gradient(135deg, #ff8ad1 0%, #f866bf 55%, #d13c9a 100%);
+  --grad-rosa: linear-gradient(135deg, #d66587 0%, #4b212b 100%);
   --grad-wa: linear-gradient(135deg, #2ee06e 0%, #25d366 100%);
   --fuente-titulo-fb: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --fuente-texto-fb: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -47,8 +48,8 @@ body {
   font-family: var(--fuente-texto, var(--fuente-texto-fb));
   color: var(--texto);
   background:
-    radial-gradient(1200px 600px at 100% -10%, #ffe0f3 0%, transparent 60%),
-    radial-gradient(1000px 500px at -10% 10%, #fff0f9 0%, transparent 55%),
+    radial-gradient(1200px 600px at 100% -10%, #f1dddc 0%, transparent 60%),
+    radial-gradient(1000px 500px at -10% 10%, #faf3f2 0%, transparent 55%),
     var(--rosa-suave);
   background-attachment: fixed;
   line-height: 1.6;
@@ -161,16 +162,16 @@ img {
 .btn-rosa {
   background: var(--grad-rosa);
   color: #fff;
-  box-shadow: 0 8px 22px rgba(216, 60, 154, 0.35);
+  box-shadow: 0 8px 22px rgba(75, 33, 43, 0.35);
 }
 .btn-rosa:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(216, 60, 154, 0.45);
+  box-shadow: 0 12px 28px rgba(75, 33, 43, 0.45);
 }
 .btn-claro {
   background: #fff;
   color: var(--rosa-oscuro);
-  box-shadow: 0 4px 14px rgba(248, 102, 191, 0.12);
+  box-shadow: 0 4px 14px rgba(75, 33, 43, 0.10);
   border: 1px solid var(--borde);
 }
 .btn-claro:hover {
@@ -192,11 +193,11 @@ img {
   padding: 8px 14px;
 }
 .btn-peligro {
-  background: #ffe3e3;
-  color: #c0392b;
+  background: #f7dde1;
+  color: #a8354a;
 }
 .btn-peligro:hover {
-  background: #ffcccc;
+  background: #f2c7ce;
 }
 .btn-bloque {
   width: 100%;
@@ -209,8 +210,8 @@ img {
   text-align: center;
   overflow: hidden;
   background:
-    radial-gradient(600px 300px at 50% -20%, #ffd0ec 0%, transparent 70%),
-    linear-gradient(180deg, #fff2fb 0%, transparent 100%);
+    radial-gradient(600px 300px at 50% -20%, #f1dddc 0%, transparent 70%),
+    linear-gradient(180deg, #faf3f2 0%, transparent 100%);
 }
 .hero::before,
 .hero::after {
@@ -224,14 +225,14 @@ img {
 .hero::before {
   width: 260px;
   height: 260px;
-  background: #ff9fda;
+  background: #eaa9c0;
   top: -60px;
   left: -60px;
 }
 .hero::after {
   width: 220px;
   height: 220px;
-  background: #ffc2ea;
+  background: #f1dddc;
   bottom: -70px;
   right: -50px;
 }
@@ -250,7 +251,7 @@ img {
   width: 96px;
   height: 96px;
   margin: 0 auto 8px;
-  filter: drop-shadow(0 6px 16px rgba(216, 60, 154, 0.25));
+  filter: drop-shadow(0 6px 16px rgba(75, 33, 43, 0.25));
 }
 .hero h1 {
   font-size: clamp(2.2rem, 7vw, 3.6rem);
@@ -325,7 +326,7 @@ img {
   background: var(--grad-rosa);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 6px 16px rgba(216, 60, 154, 0.3);
+  box-shadow: 0 6px 16px rgba(75, 33, 43, 0.3);
 }
 
 /* ── Rejilla de productos ──────────────────────────────────── */
@@ -383,7 +384,7 @@ img {
   font-weight: 600;
   color: #fff;
   text-align: center;
-  background: linear-gradient(to top, rgba(209, 60, 154, 0.85), transparent);
+  background: linear-gradient(to top, rgba(75, 33, 43, 0.85), transparent);
   opacity: 0;
   transform: translateY(8px);
   transition: opacity 0.25s ease, transform 0.25s ease;
@@ -405,7 +406,7 @@ img {
   text-transform: uppercase;
   padding: 5px 11px;
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(216, 60, 154, 0.15);
+  box-shadow: 0 2px 8px rgba(75, 33, 43, 0.15);
 }
 .tarjeta-cuerpo {
   padding: 14px 16px 18px;
@@ -554,7 +555,7 @@ img {
 
 /* ── Pie de página ─────────────────────────────────────────── */
 .pie {
-  background: linear-gradient(135deg, #d13c9a 0%, #b02f83 100%);
+  background: linear-gradient(135deg, #d66587 0%, #4b212b 100%);
   color: #fff;
   text-align: center;
   padding: 40px 20px 34px;
@@ -880,7 +881,7 @@ img {
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(58, 34, 51, 0.55);
+  background: rgba(75, 33, 43, 0.55);
   backdrop-filter: blur(3px);
   display: flex;
   align-items: flex-start;
@@ -923,7 +924,7 @@ img {
   justify-content: center;
 }
 .modal-cerrar:hover {
-  background: #ffd9ee;
+  background: #f1dddc;
 }
 @keyframes modal-aparecer {
   from { opacity: 0; }
@@ -1013,7 +1014,7 @@ img {
   flex-shrink: 0;
 }
 .spinner-rosa {
-  border-color: rgba(248, 102, 191, 0.35);
+  border-color: rgba(214, 101, 137, 0.35);
   border-top-color: var(--rosa);
 }
 @keyframes girar {
