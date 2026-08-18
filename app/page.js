@@ -20,7 +20,7 @@ export default async function PaginaInicio() {
       <section className="hero">
         <div className="hero-inner">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt={config.nombreTienda} className="hero-logo" />
+          <img src="/logo.svg" alt={config.nombreTienda} className="hero-logo" />
           <h1>{config.nombreTienda}</h1>
           <p className="hero-sub">
             <span>{config.eslogan}</span>

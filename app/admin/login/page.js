@@ -28,7 +28,7 @@ export default function PaginaLogin() {
   return (
     <div className="login-caja">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo.png" alt={config.nombreTienda} />
+      <img src="/logo.svg" alt={config.nombreTienda} />
       <h2>Panel de {config.nombreTienda}</h2>
       {error && <div className="aviso aviso-error">{error}</div>}
       <form onSubmit={entrar}>

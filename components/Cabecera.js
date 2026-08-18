@@ -9,7 +9,7 @@ export default function Cabecera() {
       <div className="cabecera-inner">
         <Link href="/" className="marca">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt={config.nombreTienda} />
+          <img src="/logo.svg" alt={config.nombreTienda} />
           <span className="marca-texto">
             <strong>{config.nombreTienda}</strong>
             <span>{config.eslogan}</span>
